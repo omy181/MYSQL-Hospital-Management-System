@@ -1,40 +1,17 @@
-from customtkinter import *
-from PIL import Image
+#from GUI import *
+import pandas as pd
+import sqlalchemy
 
-root = CTk()
-root.geometry("600x350") # window size
+engine = sqlalchemy.create_engine("mysql+pymysql://root:minecraft172@localhost/HospitalData")
 
-set_appearance_mode("dark")
+"""insertStatement = sqlalchemy.insert("Patient").values(First_Name = "omyy",Last_Name="oi")
 
+with engine.connect() as conn:
+    conn.execute(insertStatement)
+    conn.commit()"""
 
+querry = "select * from Patient"
 
-def OnButPress():
-    Name.configure(text=field.get()) # Update Label
+readdata = pd.read_sql(querry,engine)
 
-Titleframe = CTkFrame(master=root)
-Titleframe.pack(pady=10,padx=60,fill="both")
-
-# Text
-title = CTkLabel(master=Titleframe, text="Hospital Management System",font=("Arial",25),anchor="center")
-title.pack(pady=10)
-
-Mainframe = CTkFrame(master=root)
-Mainframe.pack(pady=10,padx=60,fill="both",expand = True)
-
-logo_img = CTkImage(dark_image=Image.open("DrawnVoltage.png"))
-
-# Button
-submitbutton = CTkButton(master=Mainframe,text="Submit", command=OnButPress,image=logo_img)
-#submitbutton.grid(column=0,row=0)
-submitbutton.pack(pady=10)
-
-# Input field
-field = CTkEntry(master=Mainframe)
-#field.grid(column=0,row=0)
-field.pack(pady=10)
-
-Name = CTkLabel(master=Mainframe, text="-")
-Name.pack()
-
-
-root.mainloop()
+print(readdata)
