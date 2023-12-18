@@ -21,16 +21,17 @@ def UpdateRecord(table_name,table_id_name,id,valuetochange,newvalue):
     db.ExecuteQuerry(sql)
 
 def ListTable(table_name):
-    li = [[]]
+    li = []
+    hs = []
 
     for row in db.Select(f"SHOW COLUMNS FROM {table_name}"):
-        li[0].append(row[0])
+        hs.append(row[0])
 
-    for index,row in enumerate(db.Select(f"select * from {table_name}"),start=1):
+    for index,row in enumerate(db.Select(f"select * from {table_name}")):
         li.append([])
         for feature in row:
             li[index].append(feature)
-    return li    
+    return hs,li    
 
 # Custom Functions
 

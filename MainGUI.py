@@ -1,55 +1,39 @@
-from customtkinter import *
-import DoctorsGUI
-import PatientsGUI
-from PIL import Image
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
+from PyQt5 import uic
+from PyQt5.QtWidgets import QWidget
 
-root = CTk()
-root.title("Hospital Management System")
-root.geometry("600x350") # window size
+import DatabaseFunctions as dbf
 
-set_appearance_mode("dark")
+class HospitalGui(QMainWindow):
+    def __init__(self,):
+        super(HospitalGui,self).__init__()
+        uic.loadUi("HMS_UI.ui",self)
+        self.show()
 
+        self.AddRecordButton.clicked.connect(self.AddRecord)
 
+        labels,records = dbf.ListDoctors()
+        self.LoadTable(labels,records)
+        
 
-def GoToPatients():
-    PatientsGUI.OpenWindow(root)
-    return
-    #Name.configure(text=field.get()) # Update Label
+    def LoadTable(self,labels,records):
+        self.Table.setRowCount(len(records))
+        self.Table.setColumnCount(len(labels))
 
-def GoToDoctors():
-    DoctorsGUI.OpenWindow(root)
-    return
+        self.Table.setHorizontalHeaderLabels(labels)
+        for rowindex,row in enumerate(records):
+            for columnindex,element in enumerate(row):
+                self.Table.setItem(rowindex,columnindex,QTableWidgetItem(str(element)))
 
-Titleframe = CTkFrame(master=root)
-Titleframe.pack(pady=10,padx=60,fill="both")
-
-# Text
-title = CTkLabel(master=Titleframe, text="Hospital Management System",font=("Arial",25),anchor="center")
-title.pack(pady=10)
-
-Mainframe = CTkFrame(master=root)
-Mainframe.pack(pady=10,padx=60,fill="both",expand = True)
+      
 
 
-# Button
-PatinetButton = CTkButton(master=Mainframe,text="Patients", command=GoToPatients)
-#submitbutton.grid(column=0,row=0)
-PatinetButton.pack(pady=10)
+    def AddRecord(self):
+        rowcount = self.Table.rowCount()
+        self.Table.insertRow(rowcount)
 
-# Button
-PatinetButton = CTkButton(master=Mainframe,text="Doctors", command=GoToDoctors)
-#submitbutton.grid(column=0,row=0)
-PatinetButton.pack(pady=10)
+app = QApplication([])
+window = HospitalGui()
 
-
-"""
-# Input field
-field = CTkEntry(master=Mainframe)
-#field.grid(column=0,row=0)
-field.pack(pady=10)
-
-Name = CTkLabel(master=Mainframe, text="-")
-Name.pack()
-"""
-
-root.mainloop()
+app.exec()
