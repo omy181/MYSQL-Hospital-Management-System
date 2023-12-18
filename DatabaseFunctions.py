@@ -1,4 +1,3 @@
-#from GUI import *
 import pandas as pd
 import DatabaseManager as db
 
@@ -21,8 +20,21 @@ def UpdateRecord(table_name,table_id_name,id,valuetochange,newvalue):
     sql = f"update {table_name} set {valuetochange} = {newvalue} where {table_id_name} = {id};"
     db.ExecuteQuerry(sql)
 
+def ListTable(table_name):
+    li = [[]]
+
+    for row in db.Select(f"SHOW COLUMNS FROM {table_name}"):
+        li[0].append(row[0])
+
+    for index,row in enumerate(db.Select(f"select * from {table_name}"),start=1):
+        li.append([])
+        for feature in row:
+            li[index].append(feature)
+    return li    
+
 # Custom Functions
 
+# ---------------------Patient
 def AddNewPatient(value):
     AddNewRecord("`Patient`",6,"(`First Name`,`Last Name`,`Phone Number`,`Adress`,`Date of birth`,`Email`)",value)
 
@@ -32,8 +44,27 @@ def RemovePatient(id):
 def UpdatePatient(id,valuetochange,newvalue):
     UpdateRecord("`Patient`","`Patient ID`",id,valuetochange,newvalue)
 
+def ListPatients():
+    return ListTable("`Patient`")
+
+#UpdatePatient(1,"`First Name`","'kem'")   
+
+#AddNewPatient(("omar","unal",454,"foyoyo sok sok","21 mart 2003","omyuny@gmaik.com"))
     
+# ---------------------Doctor
+    
+def AddNewDoctor(value):
+    AddNewRecord("`Doctor`",4,"(`First Name`,`Last Name`,`Department`,`Specialty`)",value)
 
-AddNewPatient(("omar","unal",454,"foyoyo sok sok","21 mart 2003","omyuny@gmaik.com"))
+def RemovePatient(id):
+    RemoveRecord("`Doctor`","Doctor ID",id)
 
-db.mydb.close()
+def UpdatePatient(id,valuetochange,newvalue):
+    UpdateRecord("`Doctor`","Doctor ID",id,valuetochange,newvalue)
+
+def ListDoctors():   
+    return ListTable("`Doctor`")
+
+#AddNewDoctor(("omar","vdf","game department","game design"))
+
+#db.mydb.close()

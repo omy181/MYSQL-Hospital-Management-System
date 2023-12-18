@@ -28,11 +28,10 @@ def ExecuteQuerry(querry):
     mycursor.close()
 
 def Select(querry):
-    # "select * from Patients where ---"
+    # "select * from `Doctor`"
     mycursor = mydb.cursor()
     mycursor.execute(querry)
     myresult = mycursor.fetchall()
-
     return myresult
 
 

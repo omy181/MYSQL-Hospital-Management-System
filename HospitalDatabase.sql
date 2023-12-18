@@ -46,6 +46,7 @@ CREATE TABLE `Medical Prescription` (
   FOREIGN KEY (`Patient ID`) REFERENCES `Patient`(`Patient ID`)
 );
 
+SHOW COLUMNS FROM Doctor;
 
+select * from `Patient`;
 
-select * from Patient;
