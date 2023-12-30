@@ -6,74 +6,83 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1026</width>
-    <height>590</height>
+    <width>1038</width>
+    <height>622</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Hospital Management System</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="Title">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>20</y>
-      <width>271</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="baseSize">
-     <size>
-      <width>0</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Hospital Management System</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="AddRecordButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>90</y>
-      <width>93</width>
+      <x>10</x>
+      <y>110</y>
+      <width>171</width>
       <height>28</height>
      </rect>
     </property>
     <property name="text">
-     <string>Add</string>
+     <string>Add New Record</string>
     </property>
    </widget>
    <widget class="QTableWidget" name="Table">
     <property name="geometry">
      <rect>
       <x>190</x>
-      <y>90</y>
+      <y>110</y>
       <width>781</width>
-      <height>301</height>
+      <height>421</height>
      </rect>
     </property>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
    </widget>
-   <widget class="QPushButton" name="SaveTable">
+   <widget class="QPushButton" name="DeleteSelectedRow">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>140</y>
-      <width>93</width>
-      <height>28</height>
+      <x>10</x>
+      <y>150</y>
+      <width>171</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>SaveTable</string>
+     <string>Delete Selected ID</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="tableCount">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>540</y>
+      <width>171</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Element Count: 000</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="PanelSelector">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>30</y>
+      <width>391</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="currentText">
+     <string/>
     </property>
    </widget>
   </widget>
@@ -82,8 +91,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1026</width>
-     <height>26</height>
+     <width>1038</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>

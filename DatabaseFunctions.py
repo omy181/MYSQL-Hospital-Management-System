@@ -1,9 +1,41 @@
 import pandas as pd
 import DatabaseManager as db
 
+
+TableValues = {
+    "Doctor": {
+        "ID":"Doctor_ID",
+        "Values":"(First_Name,Last_Name,Department,Specialty)",
+        "Count":4,
+        "Default":("First_Name","Last_Name","Department","Specialty")
+    },
+    "Patient": {
+        "ID":"Patient_ID",
+        "Values":"(First_Name,Last_Name,Phone_Number,Adress,Date_of_birth,Email)",
+        "Count":6,
+        "Default":("First_Name","Last_Name",0,"Adress","Date_of_birth","Email")
+    },    
+    "Appointment": {
+        "ID":"Appointment_ID",
+        "Values":"(Doctor_ID,Patient_ID,Date,Time,Location)",
+        "Count":5,
+        "Default":(2,2,"Date","Time","Location")
+    },
+    "Medical_Prescription": {
+        "ID":"Prescription_ID",
+        "Values":"(Patient_ID,Doctor_ID,Medication_Name,Dosage,Instructions,Diagnosis)",
+        "Count":6,
+        "Default":(2,2,"Medication Name","Dosage","Instructions","Diagnosis")
+    } 
+    }
+
 # Elementary Functions
 
-def AddNewRecord(table_name,attribute_count,values_to_add,values):
+def AddNewRecord(table_name):
+
+    attribute_count = TableValues[table_name]["Count"]
+    values_to_add = TableValues[table_name]["Values"]
+    values = TableValues[table_name]["Default"]
     vals = ""
     for _ in range(attribute_count-1):
         vals += "%s,"
@@ -12,13 +44,25 @@ def AddNewRecord(table_name,attribute_count,values_to_add,values):
     sql = f"insert into {table_name} {values_to_add} values ({vals});"
     db.ExecuteQuerryWithValues(sql,values)
 
-def RemoveRecord(table_name,table_id_name,id):    
+def RemoveRecord(table_name,id):    
+    table_id_name = TableValues[table_name]["ID"]
     sql = f"delete from {table_name} where {table_id_name} = {id};"
     db.ExecuteQuerry(sql)
 
-def UpdateRecord(table_name,table_id_name,id,valuetochange,newvalue):    
-    sql = f"update {table_name} set {valuetochange} = {newvalue} where {table_id_name} = {id};"
-    db.ExecuteQuerry(sql)
+def UpdateRecord(table_name,id,valuetochange,newvalue): 
+    table_id_name = TableValues[table_name]["ID"]   
+    sql = f"update {table_name} set {valuetochange} = '{newvalue}' where {table_id_name} = {id};"
+    try:
+        db.ExecuteQuerry(sql)
+        return True
+    except:       
+        print("Could not Update Record")
+        return False
+
+def GetRecordCount(table_name):
+    table_id_name = TableValues[table_name]["ID"]
+    sql = f"select count({table_id_name}) from {table_name};"
+    return db.Select(sql)[0][0]
 
 def ListTable(table_name):
     li = []
@@ -32,40 +76,5 @@ def ListTable(table_name):
         for feature in row:
             li[index].append(feature)
     return hs,li    
-
-# Custom Functions
-
-# ---------------------Patient
-def AddNewPatient(value):
-    AddNewRecord("`Patient`",6,"(`First Name`,`Last Name`,`Phone Number`,`Adress`,`Date of birth`,`Email`)",value)
-
-def RemovePatient(id):
-    RemoveRecord("`Patient`","`Patient ID`",id)
-
-def UpdatePatient(id,valuetochange,newvalue):
-    UpdateRecord("`Patient`","`Patient ID`",id,valuetochange,newvalue)
-
-def ListPatients():
-    return ListTable("`Patient`")
-
-#UpdatePatient(1,"`First Name`","'kem'")   
-
-#AddNewPatient(("omar","unal",454,"foyoyo sok sok","21 mart 2003","omyuny@gmaik.com"))
-    
-# ---------------------Doctor
-    
-def AddNewDoctor(value):
-    AddNewRecord("`Doctor`",4,"(`First Name`,`Last Name`,`Department`,`Specialty`)",value)
-
-def RemovePatient(id):
-    RemoveRecord("`Doctor`","Doctor ID",id)
-
-def UpdatePatient(id,valuetochange,newvalue):
-    UpdateRecord("`Doctor`","Doctor ID",id,valuetochange,newvalue)
-
-def ListDoctors():   
-    return ListTable("`Doctor`")
-
-#AddNewDoctor(("omar","vdf","game department","game design"))
 
 #db.mydb.close()
