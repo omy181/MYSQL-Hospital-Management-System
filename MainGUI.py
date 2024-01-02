@@ -20,6 +20,9 @@ class HospitalGui(QMainWindow):
         self.DeleteSelectedRow.clicked.connect(self.DeleteRow)
         self.PanelSelector.activated.connect(self.PanelChanged)
 
+        # optional buttons
+        self.OrderByDate.clicked.connect(self.OrderByDateTable)
+
 
     def InitializePanelSelector(self):
         tables = ["Doctor","Patient","Appointment","Medical_Prescription"]
@@ -32,10 +35,38 @@ class HospitalGui(QMainWindow):
         self.CurrentPanel = self.PanelSelector.currentText()
         self.RefreshTable()
 
-    def RefreshTable(self):
-        self.labels,self.records = dbf.ListTable(self.CurrentPanel)
+    def RefreshTable(self,orderby_type=-1):
+        self.labels,self.records = dbf.ListTable(self.CurrentPanel,orderby_type)
         self.LoadTable(self.labels,self.records)   
+
+        # button activations
+        self.OrderByDate.setEnabled(False)
+        earliestapp = ""
+        latestapp = ""
+        mostappdoc = ""
+        match self.CurrentPanel:
+            case "Appointment":
+                self.OrderByDate.setEnabled(True)
+                id,date = dbf.GetMinMaxRecord(self.CurrentPanel,"min")
+                earliestapp = f"Earliest Appointment: id:{id} date:{date}"
+                id,date = dbf.GetMinMaxRecord(self.CurrentPanel,"max")
+                latestapp += f"Latest Appointment: id:{id} date:{date}"
+            case "Patient":
+                self.OrderByDate.setEnabled(True)
+                id,date = dbf.GetMinMaxRecord(self.CurrentPanel,"min")
+                earliestapp = f"Oldest Patient: id:{id} date:{date}"
+                id,date = dbf.GetMinMaxRecord(self.CurrentPanel,"max")
+                latestapp += f"Youngest Patient: id:{id} date:{date}"
+                age = dbf.GetAveragePatientAge()
+                mostappdoc = f"Average Patient Age: {age}"
+            case "Doctor":
+                id,count = dbf.GetMostAppointedDoctor()
+                earliestapp = f"Most Appointed Doctor: id:{id} count:{count}"
+
         self.tableCount.setText(f"Record Count: {dbf.GetRecordCount(self.CurrentPanel)}")
+        self.earliestapp.setText(earliestapp)
+        self.latestapp.setText(latestapp)
+        self.mostappdoc.setText(mostappdoc) 
         self.SelectedID = -1
         self.DeleteRow()
 
@@ -76,6 +107,7 @@ class HospitalGui(QMainWindow):
         if dbf.UpdateRecord(self.CurrentPanel,int(self.records[row][0]),self.labels[column],itemtoprint) is False:
             self.RefreshTable()
             self.MessageBox("Can't modify cell value","Error")
+            
 
     def MessageBox(self,message,title):
         dialog = QMessageBox()   
@@ -83,6 +115,9 @@ class HospitalGui(QMainWindow):
         dialog.setWindowTitle(title) 
         dialog.setIcon(QMessageBox.Warning)
         dialog.exec_()
+
+    def OrderByDateTable(self):
+        self.RefreshTable(dbf.TableValues[self.CurrentPanel]["Date"])
 
 app = QApplication([])
 window = HospitalGui()

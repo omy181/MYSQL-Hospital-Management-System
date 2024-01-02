@@ -7,7 +7,7 @@ CREATE TABLE Patient (
   Last_Name varchar(50),
   Phone_Number int,
   Adress varchar(50),
-  Date_of_birth varchar(50),
+  Date_of_birth DATE,
   Email varchar(50),
   PRIMARY KEY (Patient_ID)
 );
@@ -25,8 +25,8 @@ CREATE TABLE Appointment (
   Appointment_ID int auto_increment,
   Doctor_ID int,
   Patient_ID int,
-  Date varchar(50),
-  Time varchar(50),
+  Date DATE,
+  Time DATETIME,
   Location varchar(50),
   PRIMARY KEY (Appointment_ID),
   FOREIGN KEY (Doctor_ID) REFERENCES Doctor(Doctor_ID),
@@ -49,3 +49,15 @@ CREATE TABLE Medical_Prescription (
 SHOW COLUMNS FROM Doctor;
 
 select * from Doctor;
+
+select Appointment_ID, min(Time) from Appointment GROUP BY Appointment_ID
+ORDER BY Time
+LIMIT 1;
+
+SELECT Doctor_ID, COUNT(*) AS appointment_count
+FROM Appointment GROUP BY Doctor_ID
+ORDER BY appointment_count DESC LIMIT 1;
+
+SELECT AVG(YEAR(CURDATE()) - YEAR(Date_of_birth)) AS average_age FROM Patient;
+
+select * from Appointment order by time;

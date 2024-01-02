@@ -7,19 +7,21 @@ TableValues = {
         "ID":"Doctor_ID",
         "Values":"(First_Name,Last_Name,Department,Specialty)",
         "Count":4,
-        "Default":("First_Name","Last_Name","Department","Specialty")
+        "Default":("First_Name","Last_Name","Department","Specialty"),
     },
     "Patient": {
         "ID":"Patient_ID",
         "Values":"(First_Name,Last_Name,Phone_Number,Adress,Date_of_birth,Email)",
         "Count":6,
-        "Default":("First_Name","Last_Name",0,"Adress","Date_of_birth","Email")
+        "Default":("First_Name","Last_Name",0,"Adress",db.datetime.now().date(),"Email"),
+        "Date":("Date_of_birth")
     },    
     "Appointment": {
         "ID":"Appointment_ID",
         "Values":"(Doctor_ID,Patient_ID,Date,Time,Location)",
         "Count":5,
-        "Default":(2,2,"Date","Time","Location")
+        "Default":(2,2,db.datetime.now().date(),db.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),"Location"),
+        "Date":("Date")
     },
     "Medical_Prescription": {
         "ID":"Prescription_ID",
@@ -64,17 +66,36 @@ def GetRecordCount(table_name):
     sql = f"select count({table_id_name}) from {table_name};"
     return db.Select(sql)[0][0]
 
-def ListTable(table_name):
+
+def GetMinMaxRecord(table_name,minstate = "min"):
+    column = TableValues[table_name]["Date"]
+    table_id_name = TableValues[table_name]["ID"]
+    sql = f"select {table_id_name}, {minstate}({column}) from {table_name} GROUP BY {table_id_name} ORDER BY {column} LIMIT 1;"
+    return db.Select(sql)[0]
+
+def ListTable(table_name,orderby_type = -1):
+
+    if orderby_type == -1:
+        orderby_type = TableValues[table_name]["ID"]
     li = []
     hs = []
 
     for row in db.Select(f"SHOW COLUMNS FROM {table_name}"):
         hs.append(row[0])
 
-    for index,row in enumerate(db.Select(f"select * from {table_name}")):
+    for index,row in enumerate(db.Select(f"select * from {table_name} order by {orderby_type}")):
         li.append([])
         for feature in row:
             li[index].append(feature)
     return hs,li    
+
+def GetMostAppointedDoctor():
+    table_id_name = TableValues["Doctor"]["ID"]
+    sql = f"SELECT {table_id_name}, COUNT(*) AS appointment_count FROM Appointment GROUP BY {table_id_name} ORDER BY appointment_count DESC LIMIT 1;"
+    return db.Select(sql)[0]
+
+def GetAveragePatientAge():
+    sql = f"SELECT AVG(YEAR(CURDATE()) - YEAR(Date_of_birth)) AS average_age FROM Patient;"
+    return db.Select(sql)[0][0]
 
 #db.mydb.close()
