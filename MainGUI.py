@@ -19,6 +19,7 @@ class HospitalGui(QMainWindow):
         self.Table.cellClicked.connect(self.SelectRow)
         self.DeleteSelectedRow.clicked.connect(self.DeleteRow)
         self.PanelSelector.activated.connect(self.PanelChanged)
+        self.Refresh.clicked.connect(self.RefreshTable)
 
         # optional buttons
         self.OrderByDate.clicked.connect(self.OrderByDateTable)
@@ -48,20 +49,20 @@ class HospitalGui(QMainWindow):
             case "Appointment":
                 self.OrderByDate.setEnabled(True)
                 id,date = dbf.GetMinMaxRecord(self.CurrentPanel,"min")
-                earliestapp = f"Earliest Appointment: id:{id} date:{date}"
+                earliestapp = f"Earliest Appointment: ID:{id} Date:{date}"
                 id,date = dbf.GetMinMaxRecord(self.CurrentPanel,"max")
-                latestapp += f"Latest Appointment: id:{id} date:{date}"
+                latestapp += f"Latest Appointment: ID:{id} Date:{date}"
             case "Patient":
                 self.OrderByDate.setEnabled(True)
-                id,date = dbf.GetMinMaxRecord(self.CurrentPanel,"min")
-                earliestapp = f"Oldest Patient: id:{id} date:{date}"
-                id,date = dbf.GetMinMaxRecord(self.CurrentPanel,"max")
-                latestapp += f"Youngest Patient: id:{id} date:{date}"
+                id,date = dbf.GetOldestYoungestPatientAge("min")
+                earliestapp = f"Oldest Patient: ID:{id} Age:{date}"
+                id,date = dbf.GetOldestYoungestPatientAge("max")
+                latestapp += f"Youngest Patient: ID:{id} Age:{date}"
                 age = dbf.GetAveragePatientAge()
                 mostappdoc = f"Average Patient Age: {age}"
             case "Doctor":
                 id,count = dbf.GetMostAppointedDoctor()
-                earliestapp = f"Most Appointed Doctor: id:{id} count:{count}"
+                earliestapp = f"Most Appointed Doctor: ID:{id} Count:{count}"
 
         self.tableCount.setText(f"Record Count: {dbf.GetRecordCount(self.CurrentPanel)}")
         self.earliestapp.setText(earliestapp)
@@ -92,7 +93,10 @@ class HospitalGui(QMainWindow):
 
     def DeleteRow(self):
         if self.SelectedID != -1:
-            dbf.RemoveRecord(self.CurrentPanel,self.SelectedID)
+            try:
+                dbf.RemoveRecord(self.CurrentPanel,self.SelectedID)
+            except:
+                self.MessageBox("This Record is used as a Foreign Key","Error")
             self.RefreshTable()
         else:
             self.DeleteSelectedRow.setEnabled(False)

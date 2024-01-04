@@ -71,6 +71,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="Refresh">
+       <property name="text">
+        <string>Refresh</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="OrderByDate">
        <property name="text">
         <string>Order By Date</string>
@@ -110,20 +117,14 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QLabel" name="mostappdoc">
+       <property name="text">
+        <string>Most Appointed Doctor: 0 0</string>
+       </property>
+      </widget>
+     </item>
     </layout>
-   </widget>
-   <widget class="QLabel" name="mostappdoc">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>580</y>
-      <width>298</width>
-      <height>39</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Most Appointed Doctor: 0 0</string>
-    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

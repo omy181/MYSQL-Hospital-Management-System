@@ -70,7 +70,7 @@ def GetRecordCount(table_name):
 def GetMinMaxRecord(table_name,minstate = "min"):
     column = TableValues[table_name]["Date"]
     table_id_name = TableValues[table_name]["ID"]
-    sql = f"select {table_id_name}, {minstate}({column}) from {table_name} GROUP BY {table_id_name} ORDER BY {column} LIMIT 1;"
+    sql = f"select {table_id_name},{column} FROM {table_name} where {column} = (select {minstate}({column}) from {table_name});"
     return db.Select(sql)[0]
 
 def ListTable(table_name,orderby_type = -1):
@@ -89,6 +89,8 @@ def ListTable(table_name,orderby_type = -1):
             li[index].append(feature)
     return hs,li    
 
+#   Custom Functions
+
 def GetMostAppointedDoctor():
     table_id_name = TableValues["Doctor"]["ID"]
     sql = f"SELECT {table_id_name}, COUNT(*) AS appointment_count FROM Appointment GROUP BY {table_id_name} ORDER BY appointment_count DESC LIMIT 1;"
@@ -97,5 +99,9 @@ def GetMostAppointedDoctor():
 def GetAveragePatientAge():
     sql = f"SELECT AVG(YEAR(CURDATE()) - YEAR(Date_of_birth)) AS average_age FROM Patient;"
     return db.Select(sql)[0][0]
+
+def GetOldestYoungestPatientAge(minstate = "min"):
+    sql = f"select Patient_ID,YEAR(CURDATE()) - YEAR(Date_of_birth) as AGE FROM Patient where YEAR(Date_of_birth) = (select {minstate}(YEAR(Date_of_birth)) from Patient);"
+    return db.Select(sql)[0]
 
 #db.mydb.close()

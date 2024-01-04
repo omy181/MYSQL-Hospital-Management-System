@@ -46,18 +46,3 @@ CREATE TABLE Medical_Prescription (
   FOREIGN KEY (Patient_ID) REFERENCES Patient(Patient_ID)
 );
 
-SHOW COLUMNS FROM Doctor;
-
-select * from Doctor;
-
-select Appointment_ID, min(Time) from Appointment GROUP BY Appointment_ID
-ORDER BY Time
-LIMIT 1;
-
-SELECT Doctor_ID, COUNT(*) AS appointment_count
-FROM Appointment GROUP BY Doctor_ID
-ORDER BY appointment_count DESC LIMIT 1;
-
-SELECT AVG(YEAR(CURDATE()) - YEAR(Date_of_birth)) AS average_age FROM Patient;
-
-select * from Appointment order by time;
